@@ -29,8 +29,6 @@ class TcpConnection(eventLoopGroup: EventLoopGroup, commander: ActorRef) extends
 
   var channel: Channel = null
 
-
-  @throws[Exception](classOf[Exception])
   override def postStop(): Unit =
     if (channel != null) channel.close()
 

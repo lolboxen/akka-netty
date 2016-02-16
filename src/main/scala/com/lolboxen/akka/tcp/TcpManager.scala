@@ -9,9 +9,7 @@ import io.netty.channel.nio.NioEventLoopGroup
 class TcpManager extends Actor {
 
   val eventLoop = new NioEventLoopGroup()
-
-
-  @throws[Exception](classOf[Exception])
+  
   override def postStop(): Unit =
     eventLoop.shutdownGracefully()
 
