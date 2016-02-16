@@ -1,0 +1,13 @@
+/RUNNING_PID
+/logs/
+/project/*-shim.sbt
+/project/project/
+/project/target/
+/target/
+
+.DS_Store
+.idea/
+*.iml
+/activator
+/*.jar
+
