@@ -3,7 +3,7 @@ package com.lolboxen.akka.tcp
 import java.net.InetSocketAddress
 import java.util
 
-import akka.actor.{Actor, ActorRef}
+import akka.actor.{Terminated, Actor, ActorRef}
 import akka.util.ByteString
 import com.lolboxen.akka.tcp.Tcp._
 import io.netty.bootstrap.Bootstrap
@@ -34,7 +34,7 @@ class TcpConnection(eventLoopGroup: EventLoopGroup, commander: ActorRef) extends
 
   override def receive: Receive = unconnected
 
-  def unconnected: Receive = {
+  def unconnected: Receive = onCommanderTermination orElse {
     case Tcp.Connect(host, port, proxy) =>
       new Bootstrap()
         .group(eventLoopGroup)
@@ -53,7 +53,7 @@ class TcpConnection(eventLoopGroup: EventLoopGroup, commander: ActorRef) extends
       become(connecting)
   }
 
-  def connecting: Receive = {
+  def connecting: Receive = onCommanderTermination orElse {
     case msg: ConnectFailed =>
       commander ! msg
       stop(self)
@@ -68,7 +68,7 @@ class TcpConnection(eventLoopGroup: EventLoopGroup, commander: ActorRef) extends
       become(connected)
   }
 
-  def connected: Receive = {
+  def connected: Receive = onCommanderTermination orElse {
     case ChannelException(cause) =>
       channel.close()
       commander ! ErrorClosed(cause)
@@ -81,6 +81,11 @@ class TcpConnection(eventLoopGroup: EventLoopGroup, commander: ActorRef) extends
       channel.writeAndFlush(data)
 
     case Close =>
+      stop(self)
+  }
+
+  def onCommanderTermination: Receive = {
+    case _: Terminated =>
       stop(self)
   }
 }
