@@ -12,6 +12,7 @@ import io.netty.channel.socket.nio.NioSocketChannel
 import io.netty.channel._
 import io.netty.handler.codec.{MessageToMessageEncoder, MessageToMessageDecoder}
 import io.netty.handler.proxy.Socks5ProxyHandler
+import io.netty.handler.timeout.ReadTimeoutHandler
 
 /**
   * Created by trent ahrens on 2/15/16.
@@ -100,6 +101,7 @@ private class TcpChannelInitializer(ref: ActorRef, proxy: Option[Socks5]) extend
     }
 
     pipeline
+      .addLast(new ReadTimeoutHandler(300))
       .addLast(new ByteStringDecoder)
       .addLast(new ByteStringEncoder)
       .addLast(new TcpInboundHandler(ref))
