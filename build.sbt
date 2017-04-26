@@ -11,6 +11,5 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-http-experimental" % akkaVer,
   "io.netty" % "netty-all" % "4.1.2.Final",
   "ch.qos.logback" % "logback-classic" % "1.1.1",
-  "com.typesafe.netty" % "netty-reactive-streams" % "1.0.6",
   "org.scalatest" %% "scalatest" % "2.2.4" % "test"
 )
